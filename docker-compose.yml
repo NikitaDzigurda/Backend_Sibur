@@ -1,0 +1,15 @@
+# Use postgres/example user/password credentials
+
+services:
+
+  db:
+    image: postgres:16.2
+    restart: always
+    # set shared memory limit when using docker-compose
+    shm_size: 128mb
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_USER: postgres
+      POSTGRES_DB: SIBUR_DB
