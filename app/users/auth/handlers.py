@@ -16,7 +16,7 @@ async def login(
         user = await auth_service.authenticate_user(request.username, request.password)
         return TokenResponse(
             access_token=await auth_service.create_access_token(user),
-            token_type="bearer"
+            token_type="bearer",
         )
     except HTTPException as e:
         raise e

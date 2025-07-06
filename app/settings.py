@@ -23,3 +23,4 @@ class Settings(BaseSettings):
             return f"{self.DB_DRIVER}://{self.DB_USER}:{self.POSTGRES_PASSWORD}@{self.HOST}:{self.DB_PORT}/{self.DB_NAME}"
         else:
             return f"postgresql+psycopg2://{self.DB_USER}:{self.POSTGRES_PASSWORD}@{self.HOST}:{self.DB_PORT}/{self.DB_NAME}"
+

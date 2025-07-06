@@ -2,11 +2,14 @@ from dataclasses import dataclass
 from app.users.user_profile.admin.repository import UserRepository, UserAlreadyExistsException, AdminRequiredException
 from app.users.user_profile.model import UserProfile
 from app.users.user_profile.schema import UserCreateSchema
+from app.users.auth.service import AuthService
+from fastapi import HTTPException
 
 
 @dataclass
 class UserService:
     user_repository: UserRepository
+    auth_service: AuthService
 
     async def create_user(self,
                           admin_login: str,
@@ -19,3 +22,16 @@ class UserService:
             raise UserAlreadyExistsException(f"User {new_user_data.login} already exists")
 
         return await self.user_repository.create_user(new_user_data)
+
+    async def get_user_from_token(self, token: str) -> UserProfile:
+
+        payload = await self.auth_service.verify_token(token)
+        user_id = payload.get("user_id")
+        if not user_id:
+            raise HTTPException(status_code=401, detail="Token missing user_id")
+
+        user = await self.user_repository.get_user(user_id)
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        return user

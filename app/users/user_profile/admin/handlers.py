@@ -16,11 +16,11 @@ router = APIRouter(prefix="/admin/users")
 async def create_user(
     user_data: UserCreateSchema,
     user_service: Annotated[UserService, Depends(get_user_service)],
-    admin_payload: Annotated[dict, Depends(get_current_admin_user)]
+    admin_user: Annotated[UserProfile, Depends(get_current_admin_user)],
 ):
     try:
         new_user = await user_service.create_user(
-            admin_login=admin_payload["sub"],
+            admin_login=admin_user.login,
             new_user_data=user_data
         )
         return {
