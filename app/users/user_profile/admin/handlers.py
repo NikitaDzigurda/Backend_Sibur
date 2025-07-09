@@ -9,7 +9,10 @@ from app.users.user_profile.admin.service import UserService
 
 from app.dependency import *
 
-router = APIRouter(prefix="/admin/users")
+router = APIRouter(
+    prefix="/admin/users",
+    tags=["Admin"]
+                   )
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
@@ -37,4 +40,20 @@ async def create_user(
     except UserAlreadyExistsException as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e))
+
+
+@router.delete("/{user_login}", status_code=status.HTTP_204_NO_CONTENT)
+async def del_user(
+        user_service: Annotated[UserService, Depends(get_user_service)],
+        admin_user: Annotated[UserProfile, Depends(get_current_admin_user)],
+        user_login: str
+):
+    try:
+        admin_login = admin_user.login
+        await user_service.del_user_by_login(user_login, admin_login)
+
+    except AdminRequiredException as e:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
             detail=str(e))
