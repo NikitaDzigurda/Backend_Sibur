@@ -11,7 +11,7 @@ from app.dependency import *
 
 router = APIRouter(
     prefix="/admin/users",
-    tags=["Admin"]
+    tags=["Admin User Operations"]
                    )
 
 

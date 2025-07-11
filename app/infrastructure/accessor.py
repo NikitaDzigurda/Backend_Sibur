@@ -14,5 +14,8 @@ AsyncSessionFactory = async_sessionmaker(
 
 
 async def get_db_session() -> AsyncSession:
-    async with AsyncSessionFactory() as session:
+    session = AsyncSessionFactory()
+    try:
         yield session
+    finally:
+        await session.close()

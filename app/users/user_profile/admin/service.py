@@ -1,4 +1,8 @@
 from dataclasses import dataclass
+
+from sqlalchemy.exc import SQLAlchemyError
+from starlette import status
+
 from app.users.user_profile.admin.repository import UserRepository, UserAlreadyExistsException, AdminRequiredException
 from app.users.user_profile.model import UserProfile
 from app.users.user_profile.schema import UserCreateSchema
@@ -35,3 +39,21 @@ class UserService:
             raise HTTPException(status_code=404, detail="User not found")
 
         return user
+
+    async def del_user_by_login(self, user_login: str, admin_login: str):
+        admin_role = await self.user_repository.get_user_role(admin_login)
+        if admin_role != "admin":
+            raise AdminRequiredException("Only admin can create users")
+
+        try:
+            deleted = await self.user_repository.del_user_by_login(user_login)
+            if not deleted:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail=f"User with login '{user_login}' not found"
+                )
+        except SQLAlchemyError as e:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Database operation failed"
+            )

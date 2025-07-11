@@ -9,14 +9,20 @@ from app.settings import Settings
 from app.users.auth.service import AuthService
 from app.users.user_profile.admin import UserRepository, UserService
 from app.chemicals.repository import ChemicalRepository
-from app.chemicals.service import ChemicalService
+from app.chemicals.service import UserChemicalService, AdminChemicalService
 from app.users.user_profile.model import UserProfile
+from app.chemicals.algorithms import AlgorithChemicalOperations
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
 
 
+async def get_algorithm(db_session: Annotated[AsyncSession, Depends(get_db_session)]) -> AlgorithChemicalOperations:
+    return AlgorithChemicalOperations(db_session=db_session)
+
+
 async def get_user_repository(db_session: Annotated[AsyncSession, Depends(get_db_session)]) -> UserRepository:
     return UserRepository(db_session=db_session)
+
 
 async def get_auth_service(
     user_repository: Annotated[UserRepository, Depends(get_user_repository)],
@@ -45,10 +51,17 @@ async def get_chemical_repository(db_session: Annotated[AsyncSession, Depends(ge
     return ChemicalRepository(db_session=db_session)
 
 
-async def get_chemical_service(
+async def get_user_chemical_service(
         chemical_repository: Annotated[ChemicalRepository, Depends(get_chemical_repository)]
-) -> ChemicalService:
-    return ChemicalService(chemical_repository=chemical_repository)
+) -> UserChemicalService:
+    return UserChemicalService(chemical_repository=chemical_repository)
+
+
+async def get_admin_chemical_service(
+        chemical_repository: Annotated[ChemicalRepository, Depends(get_chemical_repository)],
+        user_repository: Annotated[UserRepository, Depends(get_user_repository)]
+) -> AdminChemicalService:
+    return AdminChemicalService(chemical_repository=chemical_repository, user_repository=user_repository)
 
 
 async def get_current_admin_user(

@@ -4,6 +4,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from passlib.context import CryptContext
 from sqlalchemy.exc import IntegrityError
 
+import logging
+
 from app.users.user_profile.model import UserProfile
 from app.users.user_profile.schema import UserCreateSchema
 
@@ -56,4 +58,11 @@ class UserRepository:
             await self.db_session.rollback()
             raise UserAlreadyExistsException(f"Login {user_data.login} already exists")
 
+    async def del_user_by_login(self, user_login) -> bool:
+        user = await self.get_user_by_login(user_login)
+        if user is None:
+            return False
 
+        await self.db_session.delete(user)
+        await self.db_session.commit()
+        return True
