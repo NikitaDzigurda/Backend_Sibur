@@ -14,6 +14,13 @@ class ReactionSchema(BaseModel):
     product: str
 
 
+class OperationsSchema(BaseModel):
+    source: List[int]
+    target: str
+    temperature: int
+    conditions: str
+
+
 class RawMaterialSchema(BaseModel):
     id: int | None = None
     formula: str
@@ -27,11 +34,32 @@ class TransformationVariantSchema(BaseModel):
     reactions: List[ReactionSchema]
 
 
-class ChemicalBoundaryInput(BaseModel):
-    main_percent: Optional[str]
-    fe_percent: Optional[str]
-    si_percent: Optional[str]
-    k_percent: Optional[str]
-    ca_percent: Optional[str]
-    mg_percent: Optional[str]
-    na_percent: Optional[str]
+class MetalComposition(BaseModel):
+    main_percent: float
+    Fe_percent: float
+    Si_percent: float
+    K_percent: float
+    Ca_percent: float
+    Mg_percent: float
+    Na_percent: float
+
+
+class ChemicalCompositionSchema(BaseModel):
+    formula: str
+    metal_composition: MetalComposition
+
+
+class MetalCompositionDelete(BaseModel):
+    chemical_formula: str
+    main_percent: float
+    Fe_percent: float
+    Si_percent: float
+    K_percent: float
+    Ca_percent: float
+    Mg_percent: float
+    Na_percent: float
+
+
+class OperationDeleteSchema(BaseModel):
+    target_formula: str
+    source_formula: str
