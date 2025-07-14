@@ -1,5 +1,5 @@
 [project]
-name = "sibur-project"
+name = "app"
 version = "0.1.0"
 description = ""
 authors = [
@@ -35,5 +35,5 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
 dev = "uvicorn app.main:app --reload"
-start = "python -m app.main"
+start = "python3 -m app.main"
 
