@@ -43,7 +43,7 @@ class UserService:
     async def del_user_by_login(self, user_login: str, admin_login: str):
         admin_role = await self.user_repository.get_user_role(admin_login)
         if admin_role != "admin":
-            raise AdminRequiredException("Only admin can create users")
+            raise AdminRequiredException("Only admin can delete users")
 
         try:
             deleted = await self.user_repository.del_user_by_login(user_login)

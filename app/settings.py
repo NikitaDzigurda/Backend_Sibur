@@ -16,7 +16,7 @@ class Settings(BaseSettings):
 
     JWT_SECRET_KEY: str = '071b4a3ac28a5678e2f60b0fad71b26b2689295cd75c83c945c54913391e8d6b'
     JWT_ALGORITHM: str = 'HS256'
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 120
 
     def get_url(self, is_async=True):
         if is_async:

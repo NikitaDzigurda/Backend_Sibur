@@ -24,7 +24,7 @@ async def get_transformations(
         mg_percent: str = Query(None),
         na_percent: str = Query(None),
         target_formula: str = Query(...),
-        molar_mass: int = Query(...)
+        result_mass: int = Query(...)
 ):
     try:
         percents_data = {
@@ -48,7 +48,7 @@ async def get_transformations(
                 detail="No transformation chains found for this formula"
             )
 
-        await algorithm.mass_calculator(chains_dict, molar_mass, target_formula, c_max, c_min)
+        await algorithm.mass_calculator(chains_dict, result_mass, target_formula, c_max, c_min)
 
         return {
             "success": True,
