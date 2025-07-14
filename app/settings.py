@@ -7,7 +7,7 @@ dotenv.load_dotenv()
 
 
 class Settings(BaseSettings):
-    HOST: str = os.getenv("DB_HOST") if os.getenv("DB_HOST") is not None else "localhost"
+    HOST: str = os.getenv("DB_HOST") if os.getenv("DB_HOST") is not None else "db"
     DB_PORT: int = 5432
     DB_USER: str = 'postgres'
     POSTGRES_PASSWORD: str = '1234'
