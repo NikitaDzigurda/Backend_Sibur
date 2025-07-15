@@ -1,12 +1,12 @@
 [project]
-name = "sibur-project"
+name = "app"
 version = "0.1.0"
 description = ""
 authors = [
     {name = "Nikita_Dzigurda",email = "ghataju@yandex.ru"}
 ]
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.11"
 dependencies = [
     "fastapi (>=0.115.14,<0.116.0)",
     "uvicorn (>=0.35.0,<0.36.0)",
@@ -27,8 +27,7 @@ dependencies = [
 ]
 
 [tool.poetry]
-packages = [{include = "sibur_project", from = "src"}]
-
+package-mode = false
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
@@ -36,5 +35,5 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
 dev = "uvicorn app.main:app --reload"
-start = "python -m app.main"
+start = "python3 -m app.main"
 
