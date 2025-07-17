@@ -9,8 +9,8 @@ from app.chemicals.handlers_ch_operations.admin_handlers import router as admin_
 app = FastAPI(redoc_url=None)
 
 origins = ["*"]
-app.add_middleware(
-    CORSMiddleware,
+middleware = CORSMiddleware(
+    app=app,
     allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],

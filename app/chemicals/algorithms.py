@@ -9,6 +9,7 @@ from sqlalchemy import text
 
 logger = logging.getLogger(__name__)
 
+
 @dataclass
 class AlgorithChemicalOperations:
     db_session: AsyncSession
