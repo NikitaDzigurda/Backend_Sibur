@@ -49,10 +49,11 @@ async def get_transformations(
             )
 
         await algorithm.mass_calculator(chains_dict, result_mass, target_formula, c_max, c_min)
+        sorted_chains_dict = await algorithm.sort_chains_by_complexity(chains_dict)
 
         return {
             "success": True,
-            "data": chains_dict,
+            "data": sorted_chains_dict,
             "message": "Transformations calculated successfully"
         }
 

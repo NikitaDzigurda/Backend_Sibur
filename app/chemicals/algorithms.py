@@ -6,6 +6,8 @@ from math import gcd
 
 import logging
 from sqlalchemy import text
+from catboost import CatBoostRegressor
+import pandas as pd
 
 logger = logging.getLogger(__name__)
 
@@ -277,6 +279,65 @@ class AlgorithChemicalOperations:
                     else:
                         chains_dict[variant]['Шаг 1']['Входные элементы'][i]['mass'] = 0
 
+    @staticmethod
+    async def sort_chains_by_complexity(chains_dict: dict) -> dict:
+        try:
+            loaded_model = CatBoostRegressor()
+            loaded_model.load_model('model.cbm')
+        except Exception as e:
+            logger.error(f"Failed to load CatBoost model: {str(e)}", exc_info=True)
+            raise ValueError("Unable to load complexity prediction model")
+
+        pop_list = [variant for variant in chains_dict if chains_dict[variant] == "Не удаётся подобрать массы"]
+        for variant in pop_list:
+            chains_dict.pop(variant)
+
+        variants_complexity = {}
+        for variant in chains_dict:
+            chain_complexity = 0
+            for step in chains_dict[variant]:
+                conditions = chains_dict[variant][step].get("Условия проведения реакции", "")
+                if not conditions:
+                    continue
+
+                temperature, *additional_conditions = conditions.split('; ')
+                additional_conditions = [cond.strip() for cond in additional_conditions]
+                additional_conditions = [cond for cond in additional_conditions if cond]
+
+                conditions_dict = {"temperature": temperature if temperature else "0"}
+                for condition in additional_conditions:
+                    if "MPa" in condition:
+                        conditions_dict["MPa"] = condition.split()[0]
+                    elif "microimpurit" in condition:
+                        conditions_dict["microimpurities"] = 1
+                    else:
+                        conditions_dict[condition] = 1
+
+                data = {
+                    "temperature": [float(conditions_dict.get("temperature", 0))],
+                    "MPa": [float(conditions_dict.get("MPa", 0))],
+                    "hydrothermal process": [int(conditions_dict.get("hydrothermal process", 0))],
+                    "vacuum": [int(conditions_dict.get("vacuum", 0))],
+                    "microimpurities": [int(conditions_dict.get("microimpurities", 0))],
+                    "equilibrium crystallization": [int(conditions_dict.get("equilibrium crystallization", 0))],
+                    "nonequilibrium crystallization": [int(conditions_dict.get("nonequilibrium crystallization", 0))]
+                }
+
+                conditions_df = pd.DataFrame(data)
+                reaction_complexity = loaded_model.predict(conditions_df)[0]
+                chain_complexity += reaction_complexity
+
+            variants_complexity[variant] = chain_complexity
+
+        sorted_variants_complexity = dict(sorted(variants_complexity.items(), key=lambda item: item[1]))
+
+        final_dict = {}
+        i = 0
+        for variant in sorted_variants_complexity:
+            i += 1
+            final_dict[f"Вариант {i}"] = chains_dict[variant]
+
+        return final_dict
 
 
 
