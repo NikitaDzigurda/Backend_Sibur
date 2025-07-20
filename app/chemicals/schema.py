@@ -24,7 +24,7 @@ class OperationsSchema(BaseModel):
 class RawMaterialSchema(BaseModel):
     id: int | None = None
     formula: str
-    source_check: bool
+    source_check: str
     molar_mass: int
 
 

@@ -91,7 +91,7 @@ class AdminChemicalService:
                 detail=f"Chemical object with formula {composition_data.formula} not found"
             )
 
-        if not chemical_object.source_check:
+        if chemical_object.source_check == 'false':
             raise HTTPException(
                 status_code=400,
                 detail=f"Chemical object {composition_data.formula} is not marked as source (source_check is False)"

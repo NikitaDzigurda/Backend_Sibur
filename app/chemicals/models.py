@@ -8,7 +8,7 @@ class ChemicalObject(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     chemical_formula: Mapped[str] = mapped_column(nullable=False)
-    source_check: Mapped[bool] = mapped_column(nullable=False)
+    source_check: Mapped[str] = mapped_column(nullable=False)
     molar_mass: Mapped[int] = mapped_column(nullable=False)
 
     target_operations: Mapped[list["ChemicalOperation"]] = relationship(
