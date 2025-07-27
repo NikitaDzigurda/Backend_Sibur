@@ -8,9 +8,18 @@ from app.chemicals.handlers_ch_operations.admin_handlers import router as admin_
 
 app = FastAPI(redoc_url=None)
 
-origins = ["*"]
-middleware = CORSMiddleware(
-    app=app,
+# origins = ["*"]
+# middleware = CORSMiddleware(
+#     app=app,
+#     allow_origins=["http://localhost:3000"],
+#     allow_credentials=True,
+#     allow_methods=["*"],
+#     allow_headers=["*"],
+# )
+
+origins = ["http://localhost:3000"]  # Добавьте другие домены, если нужно
+app.add_middleware(
+    CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],

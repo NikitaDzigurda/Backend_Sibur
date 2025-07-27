@@ -67,7 +67,7 @@ class AlgorithChemicalOperations:
                 WHERE (r.source_ids) && ARRAY(
                     SELECT id
                     FROM chemicalobjects
-                    WHERE source_check = true
+                    WHERE source_check = 'true'
                 )
                 UNION ALL
                 SELECT 

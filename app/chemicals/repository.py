@@ -30,7 +30,7 @@ class ChemicalRepository:
 
     async def get_all_target_chemical_objects(self):
         result = await self.db_session.execute(
-            select(ChemicalObject.chemical_formula).where(ChemicalObject.source_check.is_(False)))
+            select(ChemicalObject.chemical_formula).where(ChemicalObject.source_check == 'false'))
         return result.scalars().all()
 
     async def get_chemical_object_by_formula(self, formula: str) -> Optional[ChemicalObject]:
